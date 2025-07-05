@@ -191,7 +191,7 @@ function display_status() {
     const current_direction = DIRECTIONS[player_direction_index];
 
     let statusString = ""; //"\n" + "=".repeat(40) + "\n";
-    statusString += `Now, you are facing ${current_direction}.\n`;
+    statusString += `Now, you are facing <b>${current_direction}</b>.\n`;
     statusString += "In front of you, you can see:\n";
 
     // Define the 4 quadrants of buildings relative to an intersection (dr, dc)
@@ -250,9 +250,9 @@ function display_status() {
     if (found_buildings) {
         for (const relative_desc of ["Front-Left","Front-Right"]) { //,"Back-Left","Back-Right"]) {
             if (print_list[relative_desc]) {
-                statusString += `  - ${print_list[relative_desc]} on your ` + relative_desc.split('-')[1] + '.\n';
+                statusString += `  - <b>${print_list[relative_desc]}</b> on your <b>` + relative_desc.split('-')[1] + '</b>.\n';
             } else {
-                statusString += `  - The edge of the town on your ` + relative_desc.split('-')[1] + '.\n';
+                statusString += `  - The edge of the town on your <b>` + relative_desc.split('-')[1] + '</b>.\n';
             }
         }
     } else {
@@ -280,16 +280,16 @@ function move_player(command) {
         if (new_row_int >= 0 && new_row_int <= GRID_SIZE && new_col_int >= 0 && new_col_int <= GRID_SIZE) {
             player_pos = [new_row_int, new_col_int];
             player_trace.push(player_pos);
-            appendMessage('You moved forward one block.'); //to intersection (${new_row_int}, ${new_col_int}).`);
+            appendMessage('You <b>moved forward</b> one block.'); //to intersection (${new_row_int}, ${new_col_int}).`);
         } else {
             appendMessage("You hit the edge of the town! Cannot move further in that direction.", "red-text");
         }
     } else if (command === 'l') { // Turn Left
         player_direction_index = (player_direction_index - 1 + DIRECTIONS.length) % DIRECTIONS.length;
-        appendMessage(`You turned left.`); // Now facing ${DIRECTIONS[player_direction_index]}.`);
+        appendMessage(`You turned <b>left</b>.`); // Now facing ${DIRECTIONS[player_direction_index]}.`);
     } else if (command === 'r') { // Turn Right
         player_direction_index = (player_direction_index + 1) % DIRECTIONS.length;
-        appendMessage(`You turned right.`); // Now facing ${DIRECTIONS[player_direction_index]}.`);
+        appendMessage(`You turned <b>right</b>.`); // Now facing ${DIRECTIONS[player_direction_index]}.`);
     } else {
         appendMessage("Invalid command. Please use 'f', 'l', or 'r'.", "red-text");
     }
@@ -386,8 +386,8 @@ function get_visible_buildings_description(intersection_row, intersection_col, c
         if (building_row >= 0 && building_row < GRID_SIZE && building_col >= 0 && building_col < GRID_SIZE) {
             const building_name = town_grid[building_row][building_col];
             const relative_desc = relative_position_map[current_direction_index][`${dr},${dc}`] || "Unknown Position";
-            if (relative_desc == "Front-Left")  description_left = `the ${building_name} on your Left`;
-            if (relative_desc == "Front-Right") description_right = `the ${building_name} on your Right`;
+            if (relative_desc == "Front-Left")  description_left = `the <b>${building_name}</b> on your <b>left</b>`;
+            if (relative_desc == "Front-Right") description_right = `the <b>${building_name}</b> on your <b>right</b>`;
         }
     }
     if (description_left != null )  visible_descriptions.push(description_left);
@@ -469,10 +469,10 @@ function find_path_and_describe(destination_building_name) {
     // Initial description of surroundings
     const initial_visible = get_visible_buildings_description(start_row, start_col, start_direction_idx);
     if (initial_visible.length > 0) {
-        instructions.push(`You are facing ${DIRECTIONS[start_direction_idx]}. From your current position, you can see ${initial_visible.join(', ')}.`);
+        instructions.push(`You are facing <b>${DIRECTIONS[start_direction_idx]}</b>. In front of your current position, you can see ${initial_visible.join(', ')}.`);
     } else {
         // instructions.push("From your current position, no buildings are immediately visible.");
-        instructions.push(`You are facing ${DIRECTIONS[start_direction_idx]}. From your current position, no buildings are in front of you.`);
+        instructions.push(`You are facing <b>${DIRECTIONS[start_direction_idx]}</b>. In front of your current position, no buildings are in front of you.`);
     }
 
     // Group consecutive 'f' moves
@@ -529,9 +529,9 @@ function find_path_and_describe(destination_building_name) {
         if (action_cmd === 'f') {
             if (steps > 1) {
                 // instructions.push(`Go straight for ${steps} blocks.`);
-                instructions.push(`Go straight several blocks.`);
+                instructions.push(`<b>Go straight</b> several blocks.`);
             } else {
-                instructions.push(`Go straight one block.`);
+                instructions.push(`<b>Go straight</b> one block.`);
             }
         } else if (action_cmd === 'l') {
             if ( pre_action_info != null && pre_action_info[0] == 'f') {
@@ -541,11 +541,11 @@ function find_path_and_describe(destination_building_name) {
                     instructions.push(`You will see ${visible_before_turn.join(', ')}.`);
                 }
             }
-            instructions.push("Turn left.");
+            instructions.push("<b>Turn left.</b>");
             const [current_r, current_c, current_d_idx] = [action_info[2], action_info[3], action_info[4]];
             const visible_after_turn = get_visible_buildings_description(current_r, current_c, current_d_idx);
             if (visible_after_turn.length > 0) {
-                instructions.push(`You will face ${DIRECTIONS[current_d_idx]}, and you will see ${visible_after_turn.join(', ')}.`);
+                instructions.push(`You will face <b>${DIRECTIONS[current_d_idx]}</b>, and you will see ${visible_after_turn.join(', ')}.`);
             }
         } else if (action_cmd === 'r') {
             if ( pre_action_info != null && pre_action_info[0] == 'f') {
@@ -555,19 +555,19 @@ function find_path_and_describe(destination_building_name) {
                     instructions.push(`You will see ${visible_before_turn.join(', ')}.`);
                 }
             }
-            instructions.push("Turn right.");
+            instructions.push("<b>Turn right.</b>");
             const [current_r, current_c, current_d_idx] = [action_info[2], action_info[3], action_info[4]];
             const visible_after_turn = get_visible_buildings_description(current_r, current_c, current_d_idx);
             if (visible_after_turn.length > 0) {
-                instructions.push(`You will face ${DIRECTIONS[current_d_idx]}, and you will see ${visible_after_turn.join(', ')}.`);
+                instructions.push(`You will face <b>${DIRECTIONS[current_d_idx]}</b>, and you will see ${visible_after_turn.join(', ')}.`);
             }
         }
         pre_action_info = action_info;
     }
     
-    instructions.push(`You will arrive near ${destination_building_name}.`);
+    instructions.push(`You will arrive near <b>${destination_building_name}</b>.`);
 
-    var final_instructions = "Here is how to go to the " + destination_building_name + ". Make sure to read and remember this carefully:\n";
+    var final_instructions = "Here is how to go to the " + destination_building_name + ". <b>Make sure to read and remember this carefully</b>:\n";
     for (let i = 0; i < instructions.length; i++) {
         final_instructions += "\n" + instructions[i] + "\n";
     }
@@ -587,7 +587,7 @@ function main_game_loop() {
     initialize_player();
 
     // appendMessage("\n--- Welcome to Town Navigator! ---");
-    appendMessage(`Your mission: Find the ${actual_target_building_name}.`);
+    appendMessage(`Your mission: Find the <b>${actual_target_building_name}</b>.`);
     appendMessage(find_path_and_describe(actual_target_building_name),"green-text");
     appendMessage("Commands: 'f' (forward), 'l' (turn left), 'r' (turn right)");
 
