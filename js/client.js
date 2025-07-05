@@ -78,7 +78,7 @@ var init = function() {
     
     initialize_player();
 
-    appendMessage(`Your mission is to find the ${actual_target_building_name}.`);
+    appendMessage(`Your mission is to find the <b>${actual_target_building_name}</b>.`);
     appendMessage(find_path_and_describe(actual_target_building_name));
     appendMessage("buttons-only:#OK, I understand.");
     chatbot.talk(survey_next_question());
